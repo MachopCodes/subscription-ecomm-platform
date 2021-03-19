@@ -10,6 +10,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import Header from "../Components/Header"
 
 const useStyles = makeStyles({
   root: {
@@ -147,10 +148,7 @@ const cost = Math.random()*100
   // })
   return (
     <>
-      <div>Hello there!</div>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
+    <Header/>
       <h1>Welcome to the Catporium!</h1>
       <p>Select a cat you would like to buy!</p>
       <Container>
