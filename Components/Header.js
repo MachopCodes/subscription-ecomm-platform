@@ -2,10 +2,13 @@
 
 import Link from 'next/link';
 import { signin, signout, useSession } from 'next-auth/client';
+import { useEffect } from 'react';
 
-const Header = () => {
+const Header = ({ setUser }) => {
   const [session, loading] = useSession();
-
+  useEffect(() => {
+    session && setUser(session.user.email)
+    }, [session])
   return (
     <header>
       <nav>
@@ -45,7 +48,7 @@ const Header = () => {
                   />
                 </a>
               </Link>
-              <span className="email">{session.user.email}</span>
+              <span className="email">Hi {session.user.name}!</span>
               <button className="cartButton">My Cart</button>
               <a
                 href="/api/auth/signout"
