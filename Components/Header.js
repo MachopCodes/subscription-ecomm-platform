@@ -46,6 +46,7 @@ const Header = () => {
                 </a>
               </Link>
               <span className="email">{session.user.email}</span>
+              <button className="cartButton">My Cart</button>
               <a
                 href="/api/auth/signout"
                 onClick={(e) => {
@@ -55,7 +56,6 @@ const Header = () => {
               >
                 <button className="signOutButton">Sign out</button>
               </a>
-              <button className="cartButton">My Cart</button>
             </>
           )}
         </p>
@@ -69,7 +69,6 @@ const Header = () => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          max-width: 42rem;
           margin: 0 auto;
           padding: 0.2rem 1.25rem;
         }
@@ -92,8 +91,8 @@ const Header = () => {
           margin-left: 0.25rem;
           font-weight: 600;
         }
-        .signInButton,
-        .signOutButton {
+        .signInButton {
+          background-color: #1eb1fc;
           color: #fff;
           border: none;
           border-radius: 4px;
@@ -101,6 +100,24 @@ const Header = () => {
           font-size: 1rem;
           padding: 0.5rem 1rem;
         }
+        .signOutButton {
+            background-color: #8bc34a;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+          }
+          .cartButton {
+            background-color: #f06292;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+          }
         .signInButton {
           background-color: #1eb1fc;
         }
