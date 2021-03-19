@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     maxWidth: 345,
   },
   media: {
-    height: 140,
+    height: 240,
   },
 });
 
@@ -134,7 +134,7 @@ const cost = Math.random()*100
   useEffect(() => {
     const fetchCats = async () => {
       const res = await axios.get(
-        apiUrl + "&limit=10"
+        apiUrl + "&limit=20"
       );
       setCats(res.data);
     };
@@ -147,13 +147,14 @@ const cost = Math.random()*100
   return (
     <>
     <Header/>
-      <h1>Welcome to the Catporium!</h1>
-      <p>Select a cat you would like to buy!</p>
+      <h1 style={{textAlign: 'center'}}>Welcome to the Catporium!</h1>
+      <h2 style={{textAlign: 'center'}}>Select a cat you would like to buy!</h2>
+      <br></br>
       <Container>
-      <Grid alignItems="center" spacing={4} container>
+      <Grid alignItems="center" spacing={10} container>
         {cats &&
           cats.map((cat) => (
-            <Grid item xs={6} key={cat.id}>
+            <Grid item xs={4} key={cat.id}>
               <Card className={classes.root}>
                 <CardActionArea>
                   <CardMedia
@@ -165,15 +166,15 @@ const cost = Math.random()*100
                     <Typography gutterBottom variant="h5" component="h2">
                       {catNames[(Math.floor(Math.random()*100))]}
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
-                    >${((Math.random()*100) + 80).toFixed(2)}
-                    </Typography>
                   </CardContent>
                 </CardActionArea>
                 <CardActions>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    component="p"
+                  >${((Math.random()*100) + 80).toFixed(2)}
+                  </Typography>
                   <Button size="small" color="primary">
                     Add to Cart
                   </Button>
