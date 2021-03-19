@@ -140,8 +140,6 @@ const cost = Math.random()*100
     };
     fetchCats();
   }, []);
-  cats && console.log("cats are: ", cats);
-  console.log('total catnames are: ', catNames[0])
 
   // cats.map(cat => {
   //     console.log(cat)
