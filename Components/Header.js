@@ -1,14 +1,21 @@
-// components/header.js
-
 import Link from 'next/link';
+import axios from 'axios'
 import { signin, signout, useSession } from 'next-auth/client';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Header = ({ setUser }) => {
+const Header = ({ user, setUser }) => {
   const [session, loading] = useSession();
-  useEffect(() => {
-    session && setUser(session.user.email)
-    }, [session])
+  const [subscription, setSubscription] = useState()
+
+  const fetchSubscriptions = async () => {
+    const result = await axios.get(`/api/subscription/${user}`);
+    setSubscription(result.data)
+  };
+  useEffect(() => session && setUser(session.user.email), [session])
+  useEffect(() => user && fetchSubscriptions(), [user])
+
+  console.log('subs', subscription)
+
   return (
     <header>
       <nav>
@@ -49,7 +56,9 @@ const Header = ({ setUser }) => {
                 </a>
               </Link>
               <span className="email">Hi {session.user.name}!</span>
-              <button className="cartButton">My Cart</button>
+              {subscription && (
+              <button className="cartButton">My Subscription</button>
+              )}
               <a
                 href="/api/auth/signout"
                 onClick={(e) => {
