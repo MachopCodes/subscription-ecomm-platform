@@ -1,189 +1,156 @@
 import Link from "next/link";
-import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { Container, Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import Header from "../Components/Header"
-
-const useStyles = makeStyles({
-  root: {
-    maxWidth: 345,
-  },
-  media: {
-    height: 240,
-  },
-});
+import axios from 'axios'
+import { makeStyles, Modal, Backdrop, Fade } from "@material-ui/core";
+import { Formik, Field, Form } from "formik";
+import React, { useState } from "react";
+import Header from "../Components/Header";
+import { signin } from "next-auth/client";
+import { useRouter } from "next/router";
 
 export default function Index() {
-  const [cats, setCats] = useState("");
-  const apiUrl = "https://api.thecatapi.com/v1/images/search?mime_types=gif";
-  const apiKey = "a0769af0-040e-4860-855b-912d506455e6";
+  const useStyles = makeStyles((theme) => ({
+    signInButton: {
+      backgroundColor: "#1eb1fc",
+      color: "#fff",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+      fontSize: "1rem",
+      padding: "0.5rem 1rem",
+    },
+    subutton: {
+      backgroundColor: "#8bc34a",
+      color: "#fff",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+      fontSize: "1rem",
+      padding: "0.5rem 1rem",
+    },
+    buttonContainer: {
+      display: "flex",
+      justifyContent: "center",
+    },
+    modal: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    paper: {
+      backgroundColor: theme.palette.background.paper,
+      border: "2px solid #000",
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
+    radio: {
+      display: "flex",
+      flexDirection: "column",
+    },
+    textCenter: {
+      textAlign: "center",
+    },
+  }));
+
+  const [user, setUser] = useState();
+  const [open, setOpen] = useState(false);
+  const [subscription, setSubscription] = useState();
   const classes = useStyles();
+  const router = useRouter();
 
-  const catNames = [
-    "Bella",
-    "Kitty",
-    "Lily",
-    "Charlie",
-    "Lucy",
-    "Leo",
-    "Milo",
-    "Jack",
-    "Nala",
-    "Sam",
-    "Simba",
-    "Chloe",
-    "Baby",
-    "Sadie",
-    "Ziggy",
-    "Princess",
-    "Salem",
-    "Sophie",
-    "Shadow",
-    "Izzy",
-    "Cleo",
-    "Boots",
-    "Loki",
-    "Daisy",
-    "Cooper",
-    "Missy",
-    "Oreo",
-    "Tiger",
-    "Lulu",
-    "Tucker",
-    "Jasmine",
-    "Jackson",
-    "Murphy",
-    "Pepper",
-    "Fiona",
-    "Jax",
-    "Frank",
-    "Romeo",
-    "Millie",
-    "Abby",
-    "Minnie",
-    "Olivia",
-    "Lola",
-    "Athena",
-    "Teddy",
-    "Ruby",
-    "Oscar",
-    "Bear",
-    "Moose",
-    "Pumpkin",
-    "Willow",
-    "Mittens",
-    "Coco",
-    "Penny",
-    "Sammie",
-    "Theo",
-    "Kali",
-    "Bob",
-    "Clyde",
-    "Tigger",
-    "Buddy",
-    "Joey",
-    "Emma",
-    "Ollie",
-    "Toby",
-    "George",
-    "Marley",
-    "Bagheera",
-    "Belle",
-    "Binx",
-    "Boo",
-    "Ash",
-    "Scout",
-    "Gizmo",
-    "Louie",
-    "Ginger",
-    "Midnight",
-    "Mochi",
-    "Blu",
-    "Frankie",
-    "Rosie",
-    "Ella",
-    "Calvin",
-    "Lucky",
-    "Hazel",
-    "Thor",
-    "Gus",
-    "Maggie",
-    "Piper",
-    "Harley",
-    "Rocky",
-    "Peanut",
-    "Mimi",
-    "Kitten",
-    "Remi",
-    "Annie",
-    "Sunny",
-    "Layla",
-    "Riley",
-    "Walter"
-]
-const cost = Math.random()*100
-
-  useEffect(() => {
-    const fetchCats = async () => {
-      const res = await axios.get(
-        apiUrl + "&limit=20"
-      );
-      setCats(res.data);
-    };
-    fetchCats();
-  }, []);
-
-  // cats.map(cat => {
-  //     console.log(cat)
-  // })
   return (
     <>
-    <Header/>
-      <h1 style={{textAlign: 'center'}}>Welcome to the Catporium!</h1>
-      <h2 style={{textAlign: 'center'}}>Select a cat you would like to buy!</h2>
+      <Header user={user} setUser={setUser} />
+      <h1 style={{ textAlign: "center" }}>Welcome to the Catporium!</h1>
+      <h2 style={{ textAlign: "center" }}>
+        The online store where you can subscribe to have cats send to you
+        weekly!
+      </h2>
+      <h3 style={{ textAlign: "center" }}>
+        To get started and pick your subscription, sign in!
+      </h3>
       <br></br>
-      <Container>
-      <Grid alignItems="center" spacing={10} container>
-        {cats &&
-          cats.map((cat) => (
-            <Grid item xs={4} key={cat.id}>
-              <Card className={classes.root}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.media}
-                    image={cat.url}
-                    title={cat.id}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {catNames[(Math.floor(Math.random()*100))]}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-                <CardActions>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                  >${((Math.random()*100) + 80).toFixed(2)}
-                  </Typography>
-                  <Button size="small" color="primary">
-                    Add to Cart
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-      </Grid>
-      </Container>
+      <p className={classes.buttonContainer}>
+        {!user ? (
+          <a
+            href="/api/auth/signin"
+            onClick={(e) => {
+              e.preventDefault();
+              signin();
+            }}
+          >
+            <button className={classes.signInButton}>
+              Sign in with Google
+            </button>
+          </a>
+        ) : (
+          <button className={classes.subutton} onClick={() => setOpen(true)}>
+            Start My Cat Subscription!
+          </button>
+        )}
+      </p>
+      <Modal
+        className={classes.modal}
+        open={open}
+        onClose={() => setOpen(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{ timeout: 500 }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+            <h2 className={classes.textCenter}>Please Select Your Subscription</h2>
+            <div>
+              <Formik
+                initialValues={{ subscription }}
+                // onSubmit={(values) => {
+                //   setSubscription(values)
+                //   console.log('subscription: ', values.subscription, 'user', user)
+                  onSubmit={async (values) => {
+                    const data = { subscription: values.subscription, user }
+                    // await new Promise((r) => setTimeout(r, 500));
+                    // alert(JSON.stringify(values, null, 2));
+                    try {
+                      await axios.post('/api/subscription', { data });
+                      router.push("/select-your-cats");
+                    } catch (errors) {
+                      console.log(errors);
+                    }
+                  }
+                }
+              >
+                {({ values }) => (
+                  <Form>
+                    <div
+                      role="group"
+                      aria-labelledby="my-radio-group"
+                      className={classes.radio}
+                    >
+                      <label>
+                        <Field type="radio" name="subscription" value="Basic" />
+                        Basic (5 cats per month)
+                      </label>
+                      <label>
+                        <Field
+                          type="radio"
+                          name="subscription"
+                          value="Purrrfect"
+                        />
+                        Purrfect (10 cats per month with a 10% discount)
+                      </label>
+                    </div>
+                    <br></br>
+                    <div className={classes.buttonContainer}>
+                      <button type="submit" className={classes.subutton}>
+                        Pick my cats!
+                      </button>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
+        </Fade>
+      </Modal>
     </>
   );
 }
