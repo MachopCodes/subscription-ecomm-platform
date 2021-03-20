@@ -59,7 +59,7 @@ export default function Index() {
 
   return (
     <>
-      <Header setUser={setUser} />
+      <Header user={user} setUser={setUser} />
       <h1 style={{ textAlign: "center" }}>Welcome to the Catporium!</h1>
       <h2 style={{ textAlign: "center" }}>
         The online store where you can subscribe to have cats send to you
