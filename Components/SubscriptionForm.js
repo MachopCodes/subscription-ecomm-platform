@@ -1,11 +1,26 @@
 import React from "react";
+import axios from 'axios' 
 import { useRouter } from "next/router";
+import { makeStyles } from "@material-ui/core";
+import { Formik, Field, Form } from "formik";
 
 export default function SubscriptionForm({ user}) {
-    const router = useRouter()
+  const useStyles = makeStyles((theme) => ({
+    subutton: {
+      backgroundColor: "#8bc34a",
+      color: "#fff",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+      fontSize: "1rem",
+      padding: "0.5rem 1rem",
+    }
+  }));
+  const classes = useStyles();
+  const router = useRouter()
     return (
         <Formik
-        initialValues={{ subscription }}
+        initialValues={{ subscription: '' }}
           onSubmit={async (values) => {
             const data = { subscription: values.subscription, user }
             try {
@@ -22,7 +37,7 @@ export default function SubscriptionForm({ user}) {
             <div
               role="group"
               aria-labelledby="my-radio-group"
-              className={classes.radio}
+              style={{ display: 'flex', flexDirection: 'column' }}
             >
               <label>
                 <Field type="radio" name="subscription" value="Basic" />
