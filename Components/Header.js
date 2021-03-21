@@ -11,10 +11,9 @@ const Header = ({ user, setUser }) => {
     const result = await axios.get(`/api/subscription/${user}`);
     setSubscription(result.data)
   };
+
   useEffect(() => session && setUser(session.user.email), [session])
   useEffect(() => user && fetchSubscriptions(), [user])
-
-  console.log('subs', subscription)
 
   return (
     <header>
@@ -32,7 +31,6 @@ const Header = ({ user, setUser }) => {
             <span style={{ color: '#f06292' }}>M</span>
           </a>
         </Link>
-
         <p>
           {!session && (
             <a
@@ -57,7 +55,9 @@ const Header = ({ user, setUser }) => {
               </Link>
               <span className="email">Hi {session.user.name}!</span>
               {subscription && (
-              <button className="cartButton">My Subscription</button>
+                <Link href={`/subscription/${subscription._id}`} >
+                  <button className="cartButton">My Subscription</button>
+                </Link>
               )}
               <a
                 href="/api/auth/signout"
@@ -72,7 +72,6 @@ const Header = ({ user, setUser }) => {
           )}
         </p>
       </nav>
-
       <style jsx>{`
         header {
           border-bottom: 1px solid #ccc;

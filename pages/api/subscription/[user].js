@@ -11,13 +11,36 @@ const Subscription = useSubscription();
 
 export default (req, res) => {
   requestLogger(req);
-  if (req.method === "GET") {
-    Subscription.findOne({ user: req.query.user})
-      .then(handle404)
-      .then((subscription) => {
-        return res.status(200).json(subscription);
+  if (req.method === "POST" && session) {
+    Subscription.find({ user: req.query.user })
+      .then(subscription => {
+        if(subscription) {
+          return res.status(418).json({ message: "One user subscription allowed at a time"})
+        } else {
+          Subscription.create(req.body.data)
+          .then((subscription) => res.status(201).json(subscription))
+          .catch((err) => res.status(400).json({ message: err.message }));
+        }
       })
+    Subscription.create(req.body.data)
+      .then((subscription) => res.status(201).json(subscription))
       .catch((err) => res.status(400).json({ message: err.message }));
+  } else if (req.method === "GET") {
+    if(req.query.user.length === 24) {
+      Subscription.findById(req.query.user)
+        .then(handle404)
+        .then((subscription) => {
+          return res.status(200).json(subscription);
+        })
+        .catch((err) => res.status(400).json({ message: err.message }))
+      } else {
+          Subscription.findOne({ user: req.query.user })
+            .then(handle404)
+            .then((subscription) => {
+              return res.status(200).json(subscription);
+            })
+            .catch((err) => res.status(400).json({ message: err.message }))
+          }
     } else if (req.method === "DELETE" && session) {
       Subscription.findOne({ user: req.query.user })
         .then(handle404)

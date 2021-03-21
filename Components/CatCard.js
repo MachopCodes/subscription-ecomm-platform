@@ -1,9 +1,8 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Button, Typography } from "@material-ui/core";
 import { makeStyles, CardMedia, CardContent } from "@material-ui/core";
 import { Card, CardActionArea, CardActions } from "@material-ui/core";
-import { useSession } from 'next-auth/client';
 
 const useStyles = makeStyles({
   media: { height: 240 },
@@ -113,7 +112,6 @@ const catnames = [
 ]
 
 const CatCard = ({ cat, user }) => {
-  const [ session, loading ] = useSession();
   const classes = useStyles();
   const cost = ((Math.random()*100) + 80).toFixed(2)
   const catname = catnames[(Math.floor(Math.random()*100))]
