@@ -14,7 +14,6 @@ const Header = ({ user, setUser }) => {
 
   useEffect(() => session && setUser(session.user.email), [session])
   useEffect(() => user && fetchSubscriptions(), [user])
-  console.log('sub', subscription)
 
   return (
     <header>
