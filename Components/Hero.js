@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles, Modal, Backdrop, Fade } from "@material-ui/core";
+import { Typography, makeStyles, Modal, Backdrop, Fade } from "@material-ui/core";
 import { signin } from "next-auth/client";
 import SubscriptionForm from "./SubscriptionForm"
 
@@ -38,22 +38,35 @@ export default function Hero({ user }) {
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
     },
+    heading: {
+      fontFamily: "Courier New, monospace",
+      fontSize: "44px",
+      textAlign: "center",
+      fontWeight: 600
+    },
+    subHeading: {
+      fontFamily: "Courier New, monospace",
+      fontSize: "18px",
+      textAlign: "center",
+      fontWeight: 600
+    },
   }));
 
   const [open, setOpen] = useState(false);
   const classes = useStyles();
 
   return (
-    <>
-      <h1 style={{ textAlign: "center" }}>Welcome to the Catporium!</h1>
-      <h2 style={{ textAlign: "center" }}>
-        The online store where you can subscribe to have cats send to you
-        weekly!
-      </h2>
-      <h3 style={{ textAlign: "center" }}>
-        To get started and pick your subscription, sign in!
-      </h3>
+    <main className={classes.foreground}>
       <br></br>
+      <Typography variant="h1" component="h1" className={classes.heading}>
+        Welcome to Catporium
+      </Typography>
+      <Typography variant="h2" component="h2" className={classes.subHeading}>
+        The online cat subscribscription store
+      </Typography>
+      <Typography variant="h3" component="h3" className={classes.subHeading}>
+        Sign in to get started
+      </Typography>
       <p className={classes.buttonContainer}>
         {!user ? (
           <a
@@ -67,7 +80,7 @@ export default function Hero({ user }) {
           </a>
         ) : (
           <button className={classes.subutton} onClick={() => setOpen(true)}>
-            Start My Cat Subscription!
+            Select a subscription
           </button>
         )}
       </p>
@@ -86,6 +99,6 @@ export default function Hero({ user }) {
           </div>
         </Fade>
       </Modal>
-    </>
+    </main>
   );
 }
