@@ -12,21 +12,6 @@ const Subscription = useSubscription();
 export default (req, res) => {
   requestLogger(req);
   if (req.method === "POST" && session) {
-    if (req.query.user.length === 24) {
-      Subscription.findById(req.query.user)
-        .then(subscription => {
-          if(subscription.subscription === 'Purrrfect' && subscription.items.length < 10) {
-            subscription.items.push(req.body.item)
-          } else if(subscription.subscription === 'Basic' && subscription.items.length < 5) {
-            subscription.items.push(req.body.item)
-          } else {
-            return res.status(418).json({ message: "Maximum cat limit exceeded, remove cats first to add more"})
-          }
-          return subscription.save()
-        })
-        .then(subscription => res.status(201).json(subscription))
-        .catch((err) => res.status(400).json({ message: err.message }));
-    } else {
       Subscription.find({ user: req.query.user })
         .then(subscription => {
           if (subscription.length === 0) {
@@ -36,9 +21,8 @@ export default (req, res) => {
           } else if (subscription.length > 0) {
             return res.status(418).json({ message: "One user subscription allowed at a time"})
           }
-        })
-    }
-  } else if (req.method === "GET") {
+      })
+   } else if (req.method === "GET") {
     if(req.query.user.length === 24) {
       Subscription.findById(req.query.user)
         .then((subscription) => {
@@ -67,11 +51,11 @@ export default (req, res) => {
           .catch((err) => res.status(400).json({ message: err.message }));
       }
     } else if (req.method === "PUT" && session) {
-      Subscription.findOne({ user: req.query.user })
-      .then(handle404)
-      .then(() => {
-        Object.assign(article, req.body);
-        return article.save();
+      console.log('put request')
+      Subscription.findByIdAndUpdate(req.query.user, { items: []})
+        .then(handle404)
+        .then((subscription) => {
+          return subscription.save();
         })
         .then((editedSubscription) => res.status(202).json(editedSubscription))
         .catch((err) => res.status(400).json({ message: err.message }));
