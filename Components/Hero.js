@@ -1,42 +1,17 @@
-import React, { useState } from "react";
-import { Typography, makeStyles, Modal, Backdrop, Fade } from "@material-ui/core";
-import { signin } from "next-auth/client";
-import SubscriptionForm from "./SubscriptionForm"
+import React from "react";
+import Link from 'next/link';
+import { Typography, makeStyles } from "@material-ui/core";
+import SubscriptionModal from "./SubscriptionModal"
+import SignIn from "./Signin"
 
-export default function Hero({ user }) {
+export default function Hero({ user, subscription }) {
   const useStyles = makeStyles((theme) => ({
-    signIn: {
-      backgroundColor: "#1eb1fc",
-      color: "#fff",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer",
-      fontSize: "1rem",
-      padding: "0.5rem 1rem",
-    },
-    subutton: {
-      backgroundColor: "#8bc34a",
-      color: "#fff",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer",
-      fontSize: "1rem",
-      padding: "0.5rem 1rem",
+    foreground: {
+      paddingTop: '60px'
     },
     buttonContainer: {
       display: "flex",
       justifyContent: "center",
-    },
-    modal: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    paper: {
-      backgroundColor: theme.palette.background.paper,
-      border: "2px solid #000",
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
     },
     heading: {
       fontFamily: "Courier New, monospace",
@@ -50,11 +25,17 @@ export default function Hero({ user }) {
       textAlign: "center",
       fontWeight: 600
     },
+    cartButton: {
+      backgroundColor: '#f06292',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '1rem',
+      padding: '0.5rem 1rem'
+    }
   }));
-
-  const [open, setOpen] = useState(false);
   const classes = useStyles();
-
   return (
     <main className={classes.foreground}>
       <br></br>
@@ -68,37 +49,19 @@ export default function Hero({ user }) {
         Sign in to get started
       </Typography>
       <p className={classes.buttonContainer}>
-        {!user ? (
-          <a
-            href="/api/auth/signin"
-            onClick={(e) => {
-              e.preventDefault();
-              signin();
-            }}
-          >
-            <button className={classes.signIn}>Sign in with Google</button>
-          </a>
-        ) : (
-          <button className={classes.subutton} onClick={() => setOpen(true)}>
-            Select a subscription
-          </button>
-        )}
-      </p>
-      <Modal
-        className={classes.modal}
-        open={open}
-        onClose={() => setOpen(false)}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{ timeout: 500 }}
-      >
-        <Fade in={open}>
-          <div className={classes.paper}>
-            <h2 className={classes.textCenter}>Please Select Your Subscription</h2>
-              <SubscriptionForm user={user} />
-          </div>
-        </Fade>
-      </Modal>
+        {!user 
+          ? <SignIn/> 
+          : (
+            !subscription 
+              ?<SubscriptionModal user={user} />
+              : <Link href={`/my-subscription`} >
+              <button className={classes.cartButton}>
+                Check my subscription
+              </button>
+            </Link>
+              )
+          }
+      </p>  
     </main>
   );
 }

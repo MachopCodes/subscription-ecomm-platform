@@ -1,11 +1,19 @@
 import axios from "axios";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Typography } from "@material-ui/core";
 import { makeStyles, CardMedia, CardContent } from "@material-ui/core";
 import { Card, CardActionArea, CardActions } from "@material-ui/core";
 
 const useStyles = makeStyles({
   media: { height: 240 },
+  content: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  img: {
+    marginTop: "-15px",
+    height: "60px"
+  }
 });
 
 const catnames = [
@@ -111,47 +119,47 @@ const catnames = [
     "Walter"
 ]
 
-const CatCard = ({ cat, user }) => {
+const CatCard = ({ cat, subscription }) => {
+  const [selected, setSelected] = useState(false)
+  const [catname, setcatname] = useState()
+  const [cost, setCost] = useState()
   const classes = useStyles();
-  const cost = ((Math.random()*100) + 80).toFixed(2)
-  const catname = catnames[(Math.floor(Math.random()*100))]
 
+  useEffect(() => {
+    setcatname(catnames[(Math.floor(Math.random()*100))])
+    setCost(((Math.random()*100) + 80).toFixed(2))
+  }, [])
+  
   const handleClick = async (event) => {
     event.preventDefault()
-    const data = { user, catname, cost }
+    const item = { catname, cost }
     try {
-        await axios.post("/api/cart", { data });
-        router.push("/");
+      await axios.post(`/api/subscription/${subscription._id}`, { item });
+        setSelected(!selected)
+        setCount(count -1)
       } catch (errors) {
         console.log(errors);
       }
     };
 
   return (
-      <Card>
+    <Card>
       <CardActionArea>
         <CardMedia
           className={classes.media}
           image={cat.url}
           title={cat.id}
         />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {catname}
-          </Typography>
+        <CardContent className={classes.content}>
+          <Typography variant="h5" component="span">{catname}</Typography>
+          <Typography variant="h5" component="span">${cost}</Typography>
+            <img
+              className={classes.img}
+              onClick={handleClick}
+              src={selected ? "/img/catgreen.png" : "/img/catblank.png"}
+            />
         </CardContent>
       </CardActionArea>
-      <CardActions>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          component="p"
-        >${cost}
-        </Typography>
-        <Button size="small" color="primary" onClick={handleClick}>
-          Add to Cart
-        </Button> 
-      </CardActions>
     </Card>
   )
 }

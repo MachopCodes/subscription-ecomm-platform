@@ -12,41 +12,60 @@ const Subscription = useSubscription();
 export default (req, res) => {
   requestLogger(req);
   if (req.method === "POST" && session) {
-    Subscription.find({ user: req.query.user })
-      .then(subscription => {
-        if(subscription) {
-          return res.status(418).json({ message: "One user subscription allowed at a time"})
-        } else {
-          Subscription.create(req.body.data)
-          .then((subscription) => res.status(201).json(subscription))
-          .catch((err) => res.status(400).json({ message: err.message }));
-        }
-      })
-    Subscription.create(req.body.data)
-      .then((subscription) => res.status(201).json(subscription))
-      .catch((err) => res.status(400).json({ message: err.message }));
+    if (req.query.user.length === 24) {
+      Subscription.findById(req.query.user)
+        .then(subscription => {
+          if(subscription.subscription === 'Purrrfect' && subscription.items.length < 10) {
+            subscription.items.push(req.body.item)
+          } else if(subscription.subscription === 'Basic' && subscription.items.length < 5) {
+            subscription.items.push(req.body.item)
+          } else {
+            return res.status(418).json({ message: "Maximum cat limit exceeded, remove cats first to add more"})
+          }
+          return subscription.save()
+        })
+        .then(subscription => res.status(201).json(subscription))
+        .catch((err) => res.status(400).json({ message: err.message }));
+    } else {
+      Subscription.find({ user: req.query.user })
+        .then(subscription => {
+          if (subscription.length === 0) {
+            Subscription.create(req.body.data)
+            .then((subscription) => res.status(201).json(subscription))
+            .catch((err) => res.status(400).json({ message: err.message }));
+          } else if (subscription.length > 0) {
+            return res.status(418).json({ message: "One user subscription allowed at a time"})
+          }
+        })
+    }
   } else if (req.method === "GET") {
     if(req.query.user.length === 24) {
       Subscription.findById(req.query.user)
-        .then(handle404)
         .then((subscription) => {
           return res.status(200).json(subscription);
         })
         .catch((err) => res.status(400).json({ message: err.message }))
       } else {
           Subscription.findOne({ user: req.query.user })
-            .then(handle404)
             .then((subscription) => {
               return res.status(200).json(subscription);
             })
             .catch((err) => res.status(400).json({ message: err.message }))
           }
     } else if (req.method === "DELETE" && session) {
-      Subscription.findOne({ user: req.query.user })
-        .then(handle404)
-        .then(subscription => subscription.deleteOne())
-        .then(() => res.status(204).json({ message: "Subscription Deleted" }))
-        .catch((err) => res.status(400).json({ message: err.message }));
+      if(req.query.user.length === 24) {
+        Subscription.findById(req.query.user)
+          .then(handle404)
+          .then(subscription => subscription.deleteOne())
+          .then(() => res.status(204).json({ message: "Subscription Deleted" }))
+          .catch((err) => res.status(400).json({ message: err.message }))
+      } else {
+        Subscription.findOne({ user: req.query.user })
+          .then(handle404)
+          .then(subscription => subscription.deleteOne())
+          .then(() => res.status(204).json({ message: "Subscription Deleted" }))
+          .catch((err) => res.status(400).json({ message: err.message }));
+      }
     } else if (req.method === "PUT" && session) {
       Subscription.findOne({ user: req.query.user })
       .then(handle404)
