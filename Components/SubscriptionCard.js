@@ -2,7 +2,7 @@ import React from "react";
 import SubscriptionButtons from './SubscriptionButtons'
 import { makeStyles } from "@material-ui/core";
 
-export default function SubscriptionCard({ subscription, total }) {
+export default function SubscriptionCard({ subscription, total, discount }) {
   const useStyles = makeStyles((theme) => ({
     lineItems: {
       display: 'flex',
@@ -25,12 +25,17 @@ export default function SubscriptionCard({ subscription, total }) {
       fontSize: '27px',
       fontFamily: "Courier New, monospace",
       borderRadius: '25px'
+    },
+    tableContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center'
     }
   }));
   const classes = useStyles();
   const jsx = !subscription 
     ? <p>loading...</p> : (
-    <div>
+    <div className={classes.tableContainer}>
         <table className={classes.table}>
           <tbody>
           <tr>
@@ -40,19 +45,24 @@ export default function SubscriptionCard({ subscription, total }) {
           </tr>
           {subscription.items.map(item => (
             <tr key={item._id} className={classes.lineItems}>
-              <th>{item.catname}...</th>
-              <th>...${item.cost}</th>
+              <th>{item.catname} . </th>
+              <th> . ${item.cost}</th>
             </tr>
           ))}
-          <tr className={classes.lineItems}>
-            <th>total...</th>
-            <th>...${total}</th>
+            {discount > 0 
+            ? (
+              <tr className={classes.lineItems}>
+                <th>discount  .</th>
+                <th> .  ${discount}</th>
+             </tr>
+            ) : null}
+            <tr className={classes.lineItems}>
+            <th>total  .</th>
+            <th>.  ${total}</th>
           </tr>
           </tbody>
         </table>
-      <div>
-          <SubscriptionButtons id={subscription._id} />
-      </div>
+          <SubscriptionButtons subscription={subscription} />
     </div>
     )
   return <div style={{ paddingTop: "80px" }}>{jsx}</div>

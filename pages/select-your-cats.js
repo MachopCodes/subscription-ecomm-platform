@@ -15,6 +15,9 @@ const useStyles = makeStyles({
     top: '0',
     width: '100%',
     zIndex: '4',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around'
   },
   catContainer: {
     paddingTop: '200px',
@@ -25,12 +28,22 @@ const useStyles = makeStyles({
     backgroundAttachment: 'fixed',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
+  },
+  button: {
+    backgroundColor: '#f06292',
+    color:' #fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    padding: '0.5rem 1rem',
   }
 })
 const SelectYourCat = () => {
   const [user, setUser] = useState("")
   const [cats, setCats] = useState("")
   const [count, setCount] = useState()
+  const [itemArray, setItemArray] = useState([])
   const [subscription, setSubscription] = useState()
   const [session, loading] = useSession()
   const classes = useStyles();
@@ -41,6 +54,12 @@ const SelectYourCat = () => {
   const fetchSubscription = async () => {
     const result = await axios.get(`/api/subscription/${user}`);
     setSubscription(result.data)
+    setItemArray(result.data.items)
+    if (result.data.subscription === 'Basic') {
+      setCount(5 - itemArray.length)
+    } else {
+      setCount(10 - itemArray.length)
+    }
   };
 
   const fetchCats = async () => {
@@ -63,13 +82,22 @@ const SelectYourCat = () => {
       <Typography variant="h4" component="h4" style={{textAlign: 'center'}}>
         Cats Remaining: {count}
       </Typography>
+      <Link href={`/my-subscription`}>
+        <button className={classes.button}>Confirm Cats</button>
+      </Link>
     </Paper>
       <Container className={classes.catContainer}>
       <Grid alignItems="center" spacing={10} container>
         {cats &&
           cats.map((cat) => (
             <Grid item xs={12} sm={6} md={4} key={cat.id}>
-              <CatCard cat={cat} subscription={subscription} setCount={setCount} />
+              <CatCard 
+                cat={cat} 
+                subscription={subscription} 
+                count={count} 
+                setCount={setCount}
+                itemArray={itemArray}
+                setItemArray={setItemArray} />
             </Grid>
           ))}
       </Grid>

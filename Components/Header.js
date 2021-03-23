@@ -11,8 +11,7 @@ const Header = ({ user, subscription }) => {
       <nav>
       <Link href="/">
           <a className="logo">
-            <span style={{ color: '#f06292' }}>C</span>
-            <span style={{ color: '#f06292' }}>P</span>
+            <span style={{ color: '#f06292' }}>Catporium</span>
           </a>
         </Link>
         <p>
@@ -63,6 +62,7 @@ const Header = ({ user, subscription }) => {
           text-decoration: none;
           font-size: 1.5rem;
           font-weight: 600;
+          font-family: Courier New, monospace,
         }
         .avatar {
           border-radius: 2rem;
