@@ -44,7 +44,6 @@ export default function AddToCart({ route, data }) {
   const apiUrl = "/api/" + route;
 
   const handleSubmit = async (event) => {
-    console.log("click data is", data, "apiurl is", apiUrl);
     event.preventDefault();
     try {
       await axios.post(apiUrl, { data });
