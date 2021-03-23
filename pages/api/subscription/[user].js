@@ -51,7 +51,6 @@ export default (req, res) => {
           .catch((err) => res.status(400).json({ message: err.message }));
       }
     } else if (req.method === "PUT" && session) {
-      console.log('put request')
       Subscription.findByIdAndUpdate(req.query.user, { items: []})
         .then(handle404)
         .then((subscription) => {
