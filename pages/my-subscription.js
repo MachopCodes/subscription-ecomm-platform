@@ -10,11 +10,13 @@ export default function Subscription() {
     background: {
       backgroundImage: "url(https://wallpaperaccess.com/full/621568.jpg)",
       backgroundSize: "cover",
-      height: "800px",
-      display: "flex",
-      justifyContent: 'center',
+      backgroundAttachment: 'fixed',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      height: '2000px'
     },
     subGrid: {
+      paddingTop: '100px',
       display: "flex",
       justifyContent: "center"
     }
@@ -24,6 +26,7 @@ export default function Subscription() {
     const [subscription, setSubscription] = useState()
     const [user, setUser] = useState();
     const [total, setTotal] = useState(0)
+    const [discount, setDiscount] = useState(0)
     const [session, loading] = useSession()
   
     const fetchSubscriptions = async () => {
@@ -34,19 +37,27 @@ export default function Subscription() {
     useEffect(() => session && setUser(session.user.email), [session])
     useEffect(() => {
       if(subscription) {
-        let sum = 0
-        subscription.items.map(item => sum+=Number(item.cost))
-        setTotal(sum)
+        let t = 0, d = 0
+        subscription.items.map(item => t+=Number(item.cost))
+        if(subscription.subscription === 'Basic') {
+          setTotal(t)
+        } else {
+          setDiscount((t*.1).toFixed(2))
+          setTotal((t*.9).toFixed(2))
+        }
       }
   },[subscription])
-    console.log(total)
 
   return (
     <div className={classes.background}>
       <Header user={user} subscription={subscription} />
         <Grid className={classes.subGrid} alignItems="center" spacing={10} container>
-          <Grid item xs={12} sm={6} md={4}>
-            <SubscriptionCard user={user} subscription={subscription} total={total} />
+          <Grid item xs={12} sm={10} md={6}>
+            <SubscriptionCard 
+              user={user} 
+              subscription={subscription} 
+              total={total} 
+              discount={discount} />
           </Grid>
         </Grid>
     </div>
